@@ -28,8 +28,8 @@ void Browser::initUI() {
 	QMenu *menu = menu_bar->addMenu("File");
 	menu->addAction(bookmarks);
 	menu->addAction(history);
-	menu->addSeparator();
 	menu->addAction(help);
+	menu->addSeparator();
 	menu->addAction(quit);
 
 	QAction *next = new QAction(QIcon::fromTheme("go-next"), "&Next", 0);
