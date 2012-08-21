@@ -52,6 +52,9 @@ void Browser::initUI() {
 	tool_bar->addAction(refresh);
 	tool_bar->addAction(stop);
 
+	url_bar = new QLineEdit();
+	tool_bar->addWidget(url_bar);
+
 	web_view = new QWebView(this);
 	web_view->load(QUrl("http://www.google.com"));
 	setCentralWidget(web_view);
@@ -60,8 +63,28 @@ void Browser::initUI() {
 	connect(next, SIGNAL(triggered()), web_view, SLOT(forward()));
 	connect(refresh, SIGNAL(triggered()), web_view, SLOT(reload()));
 	connect(stop, SIGNAL(triggered()), web_view, SLOT(stop()));
+	connect(web_view, SIGNAL(urlChanged(QUrl)), this, SLOT(updateUrlBar(QUrl)));
+	connect(url_bar, SIGNAL(returnPressed()), this, SLOT(urlRequested()));
+	connect(web_view, SIGNAL(titleChanged(QString)), this, SLOT(titleChange(QString)));
 
 	QStatusBar *status_bar = statusBar();
 	// FIXME: check this connect
 	connect(web_view, SIGNAL(statusBarMessage(QString)), status_bar, SLOT(showMessage(QString)));
+}
+
+void Browser::updateUrlBar(const QUrl &url) {
+	url_bar->setText(url.toString()); //change from QUrl to QString
+	url_bar->setCursorPosition(0);
+}
+
+void Browser::urlRequested() {
+	QString url = url_bar->text();
+	if (!url.startsWith("http://")) {
+		url.push_front("http://");
+	}
+	web_view->load(QUrl(url));
+}
+
+void Browser::titleChange(const QString &title) {
+	setWindowTitle(title + " - Browser");
 }

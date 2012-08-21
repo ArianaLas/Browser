@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QObject>
 #include <QWebView>
+#include <QLineEdit>
 
 class Browser : public QMainWindow {
 	
@@ -12,8 +13,15 @@ class Browser : public QMainWindow {
 		Browser(QWidget *parent = 0); //0, bo pierwsze okno nie ma parenta
 	
 	private:
+		QLineEdit *url_bar;
 		QWebView *web_view;
 		void initUI();
+		
+	private slots:
+		void updateUrlBar(const QUrl &url);
+		void urlRequested();
+		void titleChange(const QString &title);
+			
 };
 
 #endif
