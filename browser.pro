@@ -10,3 +10,6 @@ INCLUDEPATH += .
 # Input
 HEADERS += browser.hpp
 SOURCES += browser.cpp main.cpp
+
+# to use webkit engine
+QT += webkit
