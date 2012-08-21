@@ -4,7 +4,6 @@
 #include <QStatusBar>
 #include <QToolBar>
 #include <QIcon>
-#include <QWebView>
 #include <QUrl>
 #include <QString>
 #include "browser.hpp"
@@ -53,10 +52,16 @@ void Browser::initUI() {
 	tool_bar->addAction(refresh);
 	tool_bar->addAction(stop);
 
-	QWebView *web_view = new QWebView(this);
+	web_view = new QWebView(this);
 	web_view->load(QUrl("http://www.google.com"));
-
 	setCentralWidget(web_view);
 
-	statusBar();
+	connect(prev, SIGNAL(triggered()), web_view, SLOT(back()));
+	connect(next, SIGNAL(triggered()), web_view, SLOT(forward()));
+	connect(refresh, SIGNAL(triggered()), web_view, SLOT(reload()));
+	connect(stop, SIGNAL(triggered()), web_view, SLOT(stop()));
+
+	QStatusBar *status_bar = statusBar();
+	// FIXME: check this connect
+	connect(web_view, SIGNAL(statusBarMessage(QString)), status_bar, SLOT(showMessage(QString)));
 }
