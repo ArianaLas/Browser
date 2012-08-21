@@ -10,7 +10,7 @@ class Browser : public QMainWindow {
 	Q_OBJECT // if class Browser has own signals and slots
 
 	public:
-		Browser(QWidget *parent = 0); //0, bo pierwsze okno nie ma parenta
+		Browser(QWidget *parent = 0); //0, because first window has no parent 
 	
 	private:
 		QLineEdit *url_bar;
