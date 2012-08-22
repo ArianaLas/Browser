@@ -53,8 +53,6 @@ void Browser::initUI() {
 	tool_bar->addAction(stop);
 
 	url_bar = new QLineEdit();
-	tool_bar->addWidget(url_bar);
-
 	web_view = new QWebView(this);
 	web_view->load(QUrl("http://www.google.com"));
 	setCentralWidget(web_view);
@@ -70,6 +68,19 @@ void Browser::initUI() {
 	QStatusBar *status_bar = statusBar();
 	// FIXME: check this connect
 	connect(web_view, SIGNAL(statusBarMessage(QString)), status_bar, SLOT(showMessage(QString)));
+
+	stacked_widget = new QStackedWidget(this);
+	tool_bar->addWidget(stacked_widget);
+
+	progress_bar = new QProgressBar(this);
+	stacked_widget->addWidget(url_bar);
+	stacked_widget->addWidget(progress_bar);
+	stacked_widget->setCurrentWidget(url_bar);
+	connect(web_view, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
+	connect(web_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
+
+	connect(web_view, SIGNAL(loadProgress(int)), progress_bar, SLOT(setValue(int)));
+
 }
 
 void Browser::updateUrlBar(const QUrl &url) {
@@ -87,4 +98,12 @@ void Browser::urlRequested() {
 
 void Browser::titleChange(const QString &title) {
 	setWindowTitle(title + " - Browser");
+}
+
+void Browser::loadStarted() {
+	stacked_widget->setCurrentWidget(progress_bar);
+}
+
+void Browser::loadFinished(bool ok) {
+	stacked_widget->setCurrentWidget(url_bar);
 }

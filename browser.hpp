@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QWebView>
 #include <QLineEdit>
+#include <QProgressBar>
+#include <QStackedWidget>
 
 class Browser : public QMainWindow {
 	
@@ -15,12 +17,16 @@ class Browser : public QMainWindow {
 	private:
 		QLineEdit *url_bar;
 		QWebView *web_view;
+		QProgressBar *progress_bar;
+		QStackedWidget *stacked_widget;
 		void initUI();
 		
 	private slots:
 		void updateUrlBar(const QUrl &url);
 		void urlRequested();
 		void titleChange(const QString &title);
+		void loadStarted();
+		void loadFinished(bool ok);
 			
 };
 
