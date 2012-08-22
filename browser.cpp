@@ -1,4 +1,3 @@
-#include <QAction>
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -6,6 +5,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <QString>
+#include <QWebHistory>
 #include "browser.hpp"
 
 Browser::Browser(QWidget *parent) {
@@ -31,10 +31,10 @@ void Browser::initUI() {
 	menu->addSeparator();
 	menu->addAction(quit);
 
-	QAction *next = new QAction(QIcon::fromTheme("go-next"), "&Next", 0);
-	QAction *prev = new QAction(QIcon::fromTheme("go-previous"), "&Prev", 0);
+	next = new QAction(QIcon::fromTheme("go-next"), "&Next", 0);
+	prev = new QAction(QIcon::fromTheme("go-previous"), "&Prev", 0);
 	QAction *refresh = new QAction(QIcon::fromTheme("view-refresh"), "&Refresh", 0);
-	QAction *stop = new QAction(QIcon::fromTheme("process-stop"), "&Stop", 0);
+	stop = new QAction(QIcon::fromTheme("process-stop"), "&Stop", 0);
 	prev->setIconVisibleInMenu(true);
 	next->setIconVisibleInMenu(true);
 	refresh->setIconVisibleInMenu(true);
@@ -102,8 +102,13 @@ void Browser::titleChange(const QString &title) {
 
 void Browser::loadStarted() {
 	stacked_widget->setCurrentWidget(progress_bar);
+	stop->setDisabled(false);
+		
 }
 
 void Browser::loadFinished(bool ok) {
 	stacked_widget->setCurrentWidget(url_bar);
+	stop->setDisabled(true);
+	prev->setDisabled(!web_view->history()->canGoBack());
+	next->setDisabled(!web_view->history()->canGoForward());
 }

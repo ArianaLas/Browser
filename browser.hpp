@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QProgressBar>
 #include <QStackedWidget>
+#include <QAction>
 
 class Browser : public QMainWindow {
 	
@@ -19,6 +20,9 @@ class Browser : public QMainWindow {
 		QWebView *web_view;
 		QProgressBar *progress_bar;
 		QStackedWidget *stacked_widget;
+		QAction *prev;
+		QAction *next;
+		QAction *stop;
 		void initUI();
 		
 	private slots:
