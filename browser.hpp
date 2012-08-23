@@ -7,6 +7,8 @@
 #include <QProgressBar>
 #include <QStackedWidget>
 #include <QAction>
+#include <QKeyEvent>
+#include <QToolBar>
 
 class Browser : public QMainWindow {
 	
@@ -24,7 +26,12 @@ class Browser : public QMainWindow {
 		QAction *next;
 		QAction *stop;
 		QStatusBar *status_bar;
+		QToolBar *tool_bar_bottom;
+		QLineEdit *phrase;
 		void initUI();
+
+	protected:
+		void keyPressEvent(QKeyEvent *event);
 		
 	private slots:
 		void updateUrlBar(const QUrl &url);
@@ -34,6 +41,7 @@ class Browser : public QMainWindow {
 		void loadFinished(bool ok);
 		void iconChanged();
 		void linkHovered(const QString &url, const QString &title, const QString &content);
+		void find();
 			
 };
 

@@ -7,6 +7,7 @@
 #include <QString>
 #include <QWebFrame>
 #include <QWebHistory>
+#include <QLabel>
 #include "browser.hpp"
 
 Browser::Browser(QWidget *parent) {
@@ -74,10 +75,23 @@ void Browser::initUI() {
 	connect(web_view, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
 	connect(web_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
 	connect(web_view, SIGNAL(loadProgress(int)), progress_bar, SLOT(setValue(int)));
-	connect(web_view, SIGNAL(iconChanged()), this, SLOT(iconChanged()));
+	//connect(web_view, SIGNAL(iconChanged()), this, SLOT(iconChanged()));
+	setWindowIcon(web_view->icon());
 
 	QWebPage *web_page = web_view->page();
 	connect(web_page, SIGNAL(linkHovered(QString, QString, QString)), this, SLOT(linkHovered(QString, QString, QString)));
+
+	tool_bar_bottom = new QToolBar(this);
+	addToolBar(Qt::BottomToolBarArea, tool_bar_bottom);
+	QLabel *label = new QLabel("Find: ");
+	phrase = new QLineEdit();
+	tool_bar_bottom->addWidget(label);
+	tool_bar_bottom->addWidget(phrase);
+	tool_bar_bottom->hide();
+
+	connect(phrase, SIGNAL(returnPressed()), this, SLOT(find()));
+
+
 }
 
 void Browser::updateUrlBar(const QUrl &url) {
@@ -101,6 +115,7 @@ void Browser::loadStarted() {
 	stacked_widget->setCurrentWidget(progress_bar);
 	stop->setDisabled(false);
 	status_bar->showMessage(url_bar->text());
+
 }
 
 void Browser::loadFinished(bool ok) {
@@ -120,5 +135,26 @@ void Browser::linkHovered(const QString &url, const QString &title, const QStrin
 		status_bar->showMessage(url);
 	} else {
 		status_bar->showMessage(title);
+	}
+}
+
+void Browser::keyPressEvent(QKeyEvent *event) {
+	if (event->key() == Qt::Key_Slash) {
+		tool_bar_bottom->show();
+		phrase->setFocus(Qt::ShortcutFocusReason);
+	} else if (event->key() == Qt::Key_Escape) {
+		tool_bar_bottom->hide();
+		status_bar->clearMessage();
+		web_view->findText("");
+	} else if (event->key() == Qt::Key_F3 && !tool_bar_bottom->isHidden()) {
+		find();	
+	}
+}
+
+void Browser::find() {
+	if (web_view->findText(phrase->text(), QWebPage::FindWrapsAroundDocument)) {
+		status_bar->showMessage("Found: \"" + phrase->text() + "\"");
+	} else {
+		status_bar->showMessage("Not found: \"" + phrase->text() + "\"");
 	}
 }
