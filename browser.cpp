@@ -5,6 +5,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <QString>
+#include <QWebFrame>
 #include <QWebHistory>
 #include "browser.hpp"
 
@@ -22,7 +23,6 @@ void Browser::initUI() {
 	bookmarks->setIconVisibleInMenu(true);
 	help->setIconVisibleInMenu(true);
 	quit->setIconVisibleInMenu(true);
-
 	QMenuBar *menu_bar = menuBar();
 	QMenu *menu = menu_bar->addMenu("File");
 	menu->addAction(bookmarks);
@@ -39,13 +39,11 @@ void Browser::initUI() {
 	next->setIconVisibleInMenu(true);
 	refresh->setIconVisibleInMenu(true);
 	stop->setIconVisibleInMenu(true);
-
 	QMenu *page = menu_bar->addMenu("Page");
 	page->addAction(prev);
 	page->addAction(next);
 	page->addAction(refresh);
 	page->addAction(stop);
-
 	QToolBar *tool_bar = addToolBar("Main Toolbar");
 	tool_bar->addAction(prev);
 	tool_bar->addAction(next);
@@ -56,7 +54,6 @@ void Browser::initUI() {
 	web_view = new QWebView(this);
 	web_view->load(QUrl("http://www.google.com"));
 	setCentralWidget(web_view);
-
 	connect(prev, SIGNAL(triggered()), web_view, SLOT(back()));
 	connect(next, SIGNAL(triggered()), web_view, SLOT(forward()));
 	connect(refresh, SIGNAL(triggered()), web_view, SLOT(reload()));
@@ -65,9 +62,7 @@ void Browser::initUI() {
 	connect(url_bar, SIGNAL(returnPressed()), this, SLOT(urlRequested()));
 	connect(web_view, SIGNAL(titleChanged(QString)), this, SLOT(titleChange(QString)));
 
-	QStatusBar *status_bar = statusBar();
-	// FIXME: check this connect
-	connect(web_view, SIGNAL(statusBarMessage(QString)), status_bar, SLOT(showMessage(QString)));
+	status_bar = statusBar();
 
 	stacked_widget = new QStackedWidget(this);
 	tool_bar->addWidget(stacked_widget);
@@ -78,9 +73,11 @@ void Browser::initUI() {
 	stacked_widget->setCurrentWidget(url_bar);
 	connect(web_view, SIGNAL(loadStarted()), this, SLOT(loadStarted()));
 	connect(web_view, SIGNAL(loadFinished(bool)), this, SLOT(loadFinished(bool)));
-
 	connect(web_view, SIGNAL(loadProgress(int)), progress_bar, SLOT(setValue(int)));
+	connect(web_view, SIGNAL(iconChanged()), this, SLOT(iconChanged()));
 
+	QWebPage *web_page = web_view->page();
+	connect(web_page, SIGNAL(linkHovered(QString, QString, QString)), this, SLOT(linkHovered(QString, QString, QString)));
 }
 
 void Browser::updateUrlBar(const QUrl &url) {
@@ -103,7 +100,7 @@ void Browser::titleChange(const QString &title) {
 void Browser::loadStarted() {
 	stacked_widget->setCurrentWidget(progress_bar);
 	stop->setDisabled(false);
-		
+	status_bar->showMessage(url_bar->text());
 }
 
 void Browser::loadFinished(bool ok) {
@@ -111,4 +108,17 @@ void Browser::loadFinished(bool ok) {
 	stop->setDisabled(true);
 	prev->setDisabled(!web_view->history()->canGoBack());
 	next->setDisabled(!web_view->history()->canGoForward());
+	status_bar->clearMessage();
+}
+
+void Browser::iconChanged() {
+	setWindowIcon(web_view->page()->mainFrame()->icon());
+}
+
+void Browser::linkHovered(const QString &url, const QString &title, const QString &content) {
+	if (title == "") {
+		status_bar->showMessage(url);
+	} else {
+		status_bar->showMessage(title);
+	}
 }

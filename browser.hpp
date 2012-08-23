@@ -23,6 +23,7 @@ class Browser : public QMainWindow {
 		QAction *prev;
 		QAction *next;
 		QAction *stop;
+		QStatusBar *status_bar;
 		void initUI();
 		
 	private slots:
@@ -31,6 +32,8 @@ class Browser : public QMainWindow {
 		void titleChange(const QString &title);
 		void loadStarted();
 		void loadFinished(bool ok);
+		void iconChanged();
+		void linkHovered(const QString &url, const QString &title, const QString &content);
 			
 };
 
