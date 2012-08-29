@@ -9,6 +9,7 @@
 #include <QAction>
 #include <QKeyEvent>
 #include <QToolBar>
+#include <QTabBar>
 
 class Browser : public QMainWindow {
 	
@@ -28,7 +29,10 @@ class Browser : public QMainWindow {
 		QStatusBar *status_bar;
 		QToolBar *tool_bar_bottom;
 		QLineEdit *phrase;
+		QStackedWidget *stacked_main;
+		QTabBar *tab_bar;
 		void initUI();
+		QWebView* getCurrentWebView();
 
 	protected:
 		void keyPressEvent(QKeyEvent *event);
@@ -42,6 +46,9 @@ class Browser : public QMainWindow {
 		void iconChanged();
 		void linkHovered(const QString &url, const QString &title, const QString &content);
 		void find();
+		void newTab();
+		void setCurrentPage(int index);
+		
 			
 };
 
