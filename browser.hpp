@@ -37,12 +37,11 @@ class Browser : public QMainWindow {
 	
 	private:
 		QLineEdit *url_bar;
-		QWebView *web_view;
 		QProgressBar *progress_bar;
 		QStackedWidget *stacked_widget;
 		QAction *prev;
 		QAction *next;
-		QAction *stop;
+		QAction *stop_action;
 		QStatusBar *status_bar;
 		QToolBar *tool_bar_bottom;
 		QLineEdit *phrase;
@@ -57,7 +56,7 @@ class Browser : public QMainWindow {
 	private slots:
 		void updateUrlBar(const QUrl &url);
 		void urlRequested();
-		void titleChange(const QString &title);
+		void titleChanged(const QString &title);
 		void loadStarted();
 		void loadFinished(bool ok);
 		void iconChanged();
@@ -65,6 +64,12 @@ class Browser : public QMainWindow {
 		void find();
 		void newTab();
 		void setCurrentPage(int index);
+		void back();
+		void forward();
+		void stop();
+		void reload();
+		void quit();
+		void tabCloseRequested(int index);
 		
 			
 };
