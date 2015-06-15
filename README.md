@@ -1,7 +1,7 @@
 # Requirements
 
-* Qt >= 4.8
-* QtWebKit >= 2.2
+* Qt >= 5.0
+* QtWebKit >= 2.3
 
 # Building
 
