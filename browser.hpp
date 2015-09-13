@@ -1,3 +1,20 @@
+/*
+ * This file is part of Browser.
+ *
+ * Browser is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Browser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Browser.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef _BROWSER_HPP_
 #define _BROWSER_HPP_
 #include <QMainWindow>
@@ -20,12 +37,11 @@ class Browser : public QMainWindow {
 	
 	private:
 		QLineEdit *url_bar;
-		QWebView *web_view;
 		QProgressBar *progress_bar;
 		QStackedWidget *stacked_widget;
 		QAction *prev;
 		QAction *next;
-		QAction *stop;
+		QAction *stop_action;
 		QStatusBar *status_bar;
 		QToolBar *tool_bar_bottom;
 		QLineEdit *phrase;
@@ -40,7 +56,7 @@ class Browser : public QMainWindow {
 	private slots:
 		void updateUrlBar(const QUrl &url);
 		void urlRequested();
-		void titleChange(const QString &title);
+		void titleChanged(const QString &title);
 		void loadStarted();
 		void loadFinished(bool ok);
 		void iconChanged();
@@ -48,6 +64,12 @@ class Browser : public QMainWindow {
 		void find();
 		void newTab();
 		void setCurrentPage(int index);
+		void back();
+		void forward();
+		void stop();
+		void reload();
+		void quit();
+		void tabCloseRequested(int index);
 		
 			
 };
